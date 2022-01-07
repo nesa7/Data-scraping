@@ -5,7 +5,7 @@ import sites
 from sites import *
 import glob
 import re
-from sites import scraper
+import scraper
 
 def main():
     sites = get_sites()
