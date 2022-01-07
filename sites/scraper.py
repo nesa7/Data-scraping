@@ -20,46 +20,49 @@ class salvArmy(scraper):
         soup = BeautifulSoup(page.content, "html5lib")
         matches = soup.find_all('div', class_='content')
         centersList = []
-        index=0
+    
         for tag in matches:
-            print("index" , index)
-            listing = []
-            #address = soup.find('p')
-            tagList = tag.text.splitlines()
-            # state
-            pattern = r'[0-9]'
-            print(tag)
-            cleanState = tagList[1].split(',', 1)[1]
-            cleanState = re.sub(pattern, '', cleanState)
-            listing.append(cleanState)
+            try:
 
-            # county
-            cleanCounty = tagList[4].split(',', 1)[0]
-            cleanCounty = re.sub(r"[\t]*", "", cleanCounty)
-            listing.append(cleanCounty)
+                listing = []
+                #address = soup.find('p')
+                tagList = tag.text.splitlines()
+                # state
+                pattern = r'[0-9]'
+                cleanState = tagList[4].split(',', 1)[1]
+                cleanState = re.sub(pattern, '', cleanState)
+                listing.append(cleanState)
 
-            # name
-            cleanName = re.sub(r"[\t]*", "", tagList[2])
-            listing.append(cleanName)
+                # county
+                cleanCounty = tagList[4].split(',', 1)[0]
+                cleanCounty = re.sub(r"[\t]*", "", cleanCounty)
+                listing.append(cleanCounty)
 
-            # address
-            cleanAddress = re.sub(r"[\t]*", "", tagList[3])
-            listing.append(cleanAddress)
+                # name
+                cleanName = re.sub(r"[\t]*", "", tagList[2])
+                listing.append(cleanName)
 
-            # Hours
-            cleanHours = re.sub(r"[\t]*", "", tagList[6])
-            listing.append(cleanHours)
-            index+=1
-            if len(listing) == 5:
-                centersList.append(listing)
+                # address
+                cleanAddress = re.sub(r"[\t]*", "", tagList[3])
+                listing.append(cleanAddress)
+
+                # Hours
+                cleanHours = re.sub(r"[\t]*", "", tagList[6])
+                listing.append(cleanHours)
+                if len(listing) == 5:
+                    centersList.append(listing)
+            except:
+                pass
 
         return centersList
 
 
 class NJ(scraper):
 
-    def scrape(self, link: str):
+    def __init__(self):
+        self.stopwords = ["Directions", "Open:", "counties", "served:", "Location",]
 
+    def scrape(self, link: str):
         stateName = 'New Jersey'
         browser = mechanicalsoup.Browser()
         page = browser.get(link)
@@ -98,9 +101,9 @@ class NJ(scraper):
         
         return centersList
 
-    def cleanString(uncleanStr):
+    def cleanString(self, uncleanStr):
         tokens = uncleanStr.split()
-        cleanTokens = [t for t in tokens if not t in stopwords]
+        cleanTokens = [t for t in tokens if not t in self.stopwords]
         cleanText = " ".join(cleanTokens)
         clean_text = re.sub(r"[^A-Za-z0-9\s]+", "", cleanText)
         return cleanText

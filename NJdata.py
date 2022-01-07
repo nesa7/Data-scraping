@@ -34,7 +34,6 @@ def main():
 	soup = BeautifulSoup(page.content, "html5lib")
 	results = soup.find_all(class_="filtered-list__item")
 	for tag in results:
-		print(tag)
 		tListing = []
 		tListing.append(stateName)
 
